@@ -8,6 +8,7 @@ usage:
     build_and_deploy_to_managed:
       jobs:
         - cloudrun/build_deploy:
+            platform: "managed"
             tag: "gcr.io/${GOOGLE_PROJECT_ID}/example-${CIRCLE_SHA1}"
             image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
-            platform: "managed"
+            service-name: "Example-service"

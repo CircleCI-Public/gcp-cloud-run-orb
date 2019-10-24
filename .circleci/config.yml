@@ -39,6 +39,7 @@ jobs:
       - cloudrun/deploy:
           platform: managed
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          service-name: "Example-service"
 
 workflows:
   # this `lint-pack_validate_publish-dev` workflow will run on any commit
