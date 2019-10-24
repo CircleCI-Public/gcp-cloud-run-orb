@@ -1,5 +1,13 @@
 version: 2.1
 
+# add your orb below, to be used in integration tests (note: a @dev:alpha
+# release must exist; you'll need to publish manually at least once)
+# you can use scripts/publish-alpha.sh to publish a @dev:alpha release
+orbs:
+  cloudrun: circleci/gcp-cloud-run@dev:alpha
+  orb-tools: circleci/orb-tools@8.27.3
+
+
 # yaml anchor filters
 integration-dev_filters: &integration-dev_filters
   branches:
@@ -17,14 +25,7 @@ prod-deploy_requires: &prod-deploy_requires
   [
     build_and_deploy-prod
   ]
-
-# add your orb below, to be used in integration tests (note: a @dev:alpha
-# release must exist; you'll need to publish manually at least once)
-# you can use scripts/publish-alpha.sh to publish a @dev:alpha release
-orbs:
-  cloudrun: circleci/gcp-cloud-run@dev:alpha
-  orb-tools: circleci/orb-tools@8.27.3
-
+  
 jobs:
   build_and_deploy:
     docker:
@@ -109,7 +110,7 @@ workflows:
           ssh-fingerprints: ca:db:4a:d4:18:24:95:ef:50:e0:ac:5a:62:e6:e9:bd
           cleanup-tags: true
           requires:
-            - *prod-deploy_requires
+            *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
@@ -123,7 +124,7 @@ workflows:
           ssh-fingerprints: ca:db:4a:d4:18:24:95:ef:50:e0:ac:5a:62:e6:e9:bd
           cleanup-tags: true
           requires:
-            - *prod-deploy_requires
+            *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
@@ -137,7 +138,7 @@ workflows:
           ssh-fingerprints: ca:db:4a:d4:18:24:95:ef:50:e0:ac:5a:62:e6:e9:bd
           cleanup-tags: true
           requires:
-            - *prod-deploy_requires
+            *prod-deploy_requires
           filters:
             branches:
               ignore: /.*/
