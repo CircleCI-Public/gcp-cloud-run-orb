@@ -1,9 +1,9 @@
 version: 2.1
 
 description: >
-  Sample orb description
-  # What will your orb allow users to do?
-  # Descriptions should be short, simple, and clear.
+  "Build and deploy stateless images to Google Cloud Run as serverless applications.
+  Repo: https://github.com/CircleCI-Public/gcp-cloud-run-orb
+  Home: https://cloud.google.com/run/"
 
 orbs:
-  hello: circleci/hello-build@0.0.5 # Sample imported orb
+  gcp-cli: circleci/gcp-cli@1.8.2

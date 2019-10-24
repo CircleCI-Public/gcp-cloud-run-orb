@@ -1,0 +1,36 @@
+# How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+description: >
+  Build your container image using Cloud Run Build.
+parameters:
+  source:
+    type: string
+    default: ""
+    description: 'The location of the source to build. The location can be a directory on a local disk or a gzipped archive file (.tar.gz) in Google Cloud Storage. If a dockerfile is present in the working directory, this parameter may be left blank.'
+  tag:
+    type: string
+    default: ""
+    description: 'The tag to use with a "docker build" image creation. Cloud Build will run a remote "docker build -t $TAG .", where $TAG is the tag provided by this flag. The tag must be in the gcr.io/* or *.gcr.io/* namespaces. Specify a tag if you want Cloud Build to build using a Dockerfile instead of a build config file. If you specify a tag in this command, your source must include a Dockerfile. For instructions on building using a Dockerfile see https://cloud.google.com/cloud-build/docs/quickstart-docker.'
+  config:
+    type: string
+    default: ""
+    description: 'The YAML or JSON file to use as the build configuration file.'
+  args:
+    type: string
+    default: ""
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/builds/submit"
+steps:
+  - run:
+      name: "Cloud Run Build"
+      command: |
+              # if no source parameter is set, check for a docker file and fail if none is found.
+              <<^ parameters.source >>
+              if [ -f dockerfile ]; then
+                echo "No docker image in $(pwd). You may need to specify a source location."
+                exit 1
+              fi
+              <</ parameters.source >>
+              gcloud builds submit \
+              <<# parameters.source>>--source << parameters.source >><</ parameters.source>> \
+              <<# parameters.tag>>--tag << parameters.tag >><</ parameters.tag>> \
+              <<# parameters.config>>--config << parameters.config >><</ parameters.config>> \
+              << parameters.args >>

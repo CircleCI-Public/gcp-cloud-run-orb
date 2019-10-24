@@ -1,0 +1,112 @@
+# How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+description: >
+  Build your container image using Cloud Build.
+parameters:
+  platform:
+    type: enum
+    enum: ["managed", "gke", "kubernetes"]
+    default: "managed"
+    description: 'Target platform'
+  image:
+    type: string
+    default: ""
+    description: 'Name of the container image to deploy (e.g. gcr.io/cloudrun/hello:latest).'
+  service-name:
+    type: string
+    description: "What is the name of the service being deployed?"
+  region:
+    type: string
+    default: ""
+    description: 'Required on "managed" platform.'
+  cluster:
+    type: string
+    default: ""
+    description: 'ID of the cluster or fully qualified identifier for the cluster. Required on "gke" and "kubernetes" platforms.'
+  cluster-location:
+    type: string
+    default: ""
+    description: 'Zone in which the cluster is located. Required on "gke" and "kubernetes" platforms.'
+  kubeconfig:
+    type: string
+    default: ""
+    description: 'The absolute path to your kubectl config file. Required on "gke" and "kubernetes" platforms.'
+  kubecontext:
+    type: string
+    default: ""
+    description: 'The name of the context in your kubectl config file to use for connecting. Required on "gke" and "kubernetes" platforms.'
+  args:
+    type: string
+    default: ""
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
+steps:
+  - gcp-cli/install
+  - gcp-cli/initialize
+  - run:
+      name: Cloud Run deploy
+      command: |
+        PLATFORM=<<parameters.platform>>
+        case $PLATFORM in
+          managed)
+            echo 'Platform: Managed'
+            # Check for required parameters
+            GCP_REGION=<<parameters.region>>
+            GCP_SERVICE_NAME=<<parameters.service-name>>
+            if [ -z $GCP_REGION ]; then
+              echo 'The region parameter is required for the "managed" platform.'
+              exit 1
+            fi
+            if [ -z $GCP_SERVICE_NAME ]; then
+              echo 'The service-name parameter is required for the "managed" platform.'
+              exit 1
+            fi
+            # End of parameter check
+            # Deployment command
+            gcloud beta run deploy <<parameters.service-name>> \
+            --image <<parameters.image>> \
+            --region <<parameters.region>> \
+            --allow-unauthenticated \
+            --platform managed
+            ;;
+          gke)
+            echo 'Platform: GKE'
+            # Check for required parameters
+            GCP_CLUSTER=<<parameters.cluster>>
+            GCP_CLUSTER_LOCATION=<<parameters.cluster-location>>
+            if [ -z $GCP_CLUSTER ]; then
+              echo 'The cluster parameter is required for the "gke" platform.'
+              exit 1
+            fi
+            if [ -z $GCP_CLUSTER_LOCATION ]; then
+              echo 'The cluster-location parameter is required for the "gke" platform.'
+              exit 1
+            fi
+            # End of parameter check
+            # Deployment command
+            gcloud beta run deploy \
+            --cluster <<parameters.cluster>> \
+            --cluster-location <<parameters.cluster-location>> \
+            --allow-unauthenticated \
+            --platform gke
+            ;;
+          kubernetes)
+            echo 'Platform: Kubernetes'
+            GCP_KUBECONFIG=<<parameters.kubeconfig>>
+            GCP_KUBECONTEXT=<<parameters.kubecontext>>
+            # Check for required parameters
+            if [ -z $GCP_KUBECONFIG ]; then
+              echo 'The kubeconfig parameter is required for the "kubernetes" platform.'
+              exit 1
+            fi
+            if [ -z $GCP_KUBECONTEXT ]; then
+              echo 'The kubecontext parameter is required for the "kubernetes" platform.'
+              exit 1
+            fi
+            # End of parameter check
+            # Deployment command
+            gcloud beta run deploy \
+            --kubeconfig <<parameters.kubeconfig>> \
+            --context <<parameters.kubecontext>>\
+            --allow-unauthenticated \
+            --platform kubernetes
+            ;;
+        esac
