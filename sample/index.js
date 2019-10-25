@@ -8,5 +8,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(8080, () => {
-  console.log('Hello world listening on port', port)
+  console.log('Hello world listening on port 8080')
 })
