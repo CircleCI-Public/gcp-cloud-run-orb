@@ -45,6 +45,7 @@ jobs:
           platform: managed
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           service-name: "Example-service"
+          region: us-east1
 
 workflows:
   # this `lint-pack_validate_publish-dev` workflow will run on any commit
