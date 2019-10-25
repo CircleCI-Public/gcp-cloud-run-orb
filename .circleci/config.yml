@@ -30,10 +30,15 @@ jobs:
   build_and_deploy:
     docker:
       - image: cimg/base:stable
-    working_directory: ~/project/sample/
+    working_directory: ~/project/sample
     steps:
       - checkout
       - cloudrun/init
+      - run:
+          name: Check contents of current directory
+          command: |
+            pwd
+            ls -lah
       - cloudrun/build:
           tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
       - cloudrun/deploy:
