@@ -44,7 +44,7 @@ jobs:
       - cloudrun/deploy:
           platform: managed
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
-          service-name: "Example-service"
+          service-name: "example-service"
           region: us-east1
 
 workflows:
