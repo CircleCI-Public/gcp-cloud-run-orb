@@ -30,7 +30,7 @@ steps:
               fi
               <</ parameters.source >>
               gcloud builds submit \
-              <<# parameters.source>>source << parameters.source >><</ parameters.source>> \
+              <<# parameters.source>><< parameters.source >><</ parameters.source>> \
               <<# parameters.tag>>--tag << parameters.tag >><</ parameters.tag>> \
               <<# parameters.config>>--config << parameters.config >><</ parameters.config>> \
               << parameters.args >>
