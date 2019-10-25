@@ -6,4 +6,4 @@ description: >
   Home: https://cloud.google.com/run/"
 
 orbs:
-  gcp-cli: circleci/gcp-cli@1.8.2
+  gcp-cli: circleci/gcp-cli@1.8.3
