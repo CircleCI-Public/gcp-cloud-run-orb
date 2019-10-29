@@ -28,8 +28,8 @@ parameters:
     description: 'Zone in which the cluster is located. Required on "gke" and "kubernetes" platforms.'
   kubeconfig:
     type: string
-    default: ""
-    description: 'The absolute path to your kubectl config file. Required on "gke" and "kubernetes" platforms.'
+    default: "${GCP_KUBECONFIG}"
+    description: 'The absolute path to your kubectl config file. May also use an env var such as "${KUBECONFIG}" Required on "kubernetes" platforms.'
   kubecontext:
     type: string
     default: ""
@@ -38,6 +38,10 @@ parameters:
     type: string
     default: ""
     description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
+  unauthenticated:
+    type: bool
+    default: false
+    description: "Whether to enable allowing unauthenticated access to the service."
 steps:
   - gcp-cli/install
   - gcp-cli/initialize
@@ -64,7 +68,8 @@ steps:
             gcloud beta run deploy <<parameters.service-name>> \
             --image <<parameters.image>> \
             --region <<parameters.region>> \
-            --allow-unauthenticated \
+            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform managed
             ;;
           gke)
@@ -85,28 +90,30 @@ steps:
             gcloud beta run deploy \
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
-            --allow-unauthenticated \
+            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform gke
             ;;
           kubernetes)
             echo 'Platform: Kubernetes'
             GCP_KUBECONFIG=<<parameters.kubeconfig>>
             GCP_KUBECONTEXT=<<parameters.kubecontext>>
+            GCP_SERVICE_NAME=<<parameters.service-name>>
             # Check for required parameters
             if [ -z $GCP_KUBECONFIG ]; then
               echo 'The kubeconfig parameter is required for the "kubernetes" platform.'
               exit 1
             fi
-            if [ -z $GCP_KUBECONTEXT ]; then
-              echo 'The kubecontext parameter is required for the "kubernetes" platform.'
-              exit 1
-            fi
             # End of parameter check
+            gcloud components update
+            gcloud components install beta
+            gcloud components install kubectl
             # Deployment command
-            gcloud beta run deploy \
+            gcloud beta run deploy <<parameters.service-name>>\
             --kubeconfig <<parameters.kubeconfig>> \
-            --context <<parameters.kubecontext>>\
-            --allow-unauthenticated \
+            <<#parameters.kubeconfig>>--context <<parameters.kubecontext>><</parameters.kubeconfig>>\
+            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform kubernetes
             ;;
         esac

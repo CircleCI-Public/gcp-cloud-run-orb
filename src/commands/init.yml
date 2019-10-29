@@ -6,4 +6,4 @@ steps:
   - gcp-cli/initialize
   - run:
       name: "Prep Cloud Run components"
-      command: gcloud components install beta && gcloud components update
+      command: gcloud components install beta && gcloud components update # Nov 12th 2019, switch to component update only.
