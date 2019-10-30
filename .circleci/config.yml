@@ -51,6 +51,11 @@ jobs:
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           service-name: "example-service"
           region: us-east1
+          unauthenticated: true
+      - run:
+          name: "Test GCP service"
+          command:  |
+            gcloud beta run services describe <<parameters.service-name>>
 
 workflows:
   # this `lint-pack_validate_publish-dev` workflow will run on any commit
