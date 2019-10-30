@@ -68,7 +68,7 @@ steps:
             gcloud beta run deploy <<parameters.service-name>> \
             --image <<parameters.image>> \
             --region <<parameters.region>> \
-            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform managed
             ;;
@@ -90,7 +90,7 @@ steps:
             gcloud beta run deploy \
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
-            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform gke
             ;;
@@ -112,7 +112,7 @@ steps:
             gcloud beta run deploy <<parameters.service-name>>\
             --kubeconfig <<parameters.kubeconfig>> \
             <<#parameters.kubeconfig>>--context <<parameters.kubecontext>><</parameters.kubeconfig>>\
-            <<# parameters.unauthenticated>>--allow-unauthenticated</parameters.unauthenticated>> \
+            <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform kubernetes
             ;;
