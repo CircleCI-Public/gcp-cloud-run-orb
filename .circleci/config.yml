@@ -55,7 +55,7 @@ jobs:
       - run:
           name: "Test GCP service"
           command:  |
-            gcloud beta run services describe example-service
+            gcloud beta run services describe example-service --platform managed
 
 workflows:
   # this `lint-pack_validate_publish-dev` workflow will run on any commit
