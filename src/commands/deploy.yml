@@ -39,7 +39,7 @@ parameters:
     default: ""
     description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
   unauthenticated:
-    type: bool
+    type: boolean
     default: false
     description: "Whether to enable allowing unauthenticated access to the service."
 steps:
