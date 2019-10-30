@@ -121,4 +121,4 @@ steps:
   - run:
       name: "Get Service URL"
       command: |
-        gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format json | jq -r [.status.address.url]
+        gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format json | jq --raw-output [.status.address.url][0]
