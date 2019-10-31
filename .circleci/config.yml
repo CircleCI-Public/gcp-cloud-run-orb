@@ -35,6 +35,7 @@ jobs:
       - checkout
       - cloudrun/init
       - cloudrun/create_gke_cluster:
+          cluster-name: "example-cluster"
           machine-type: "n1-standard-4"
           zone: "us-east1"
           enable-stackdriver-kubernetes: true

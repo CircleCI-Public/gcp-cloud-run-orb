@@ -2,6 +2,9 @@
 description: >
   Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
 parameters:
+  cluster-name:
+    type: string
+    description: "The name of the cluster"
   addons:
     type: string
     default: "HorizontalPodAutoscaling,HttpLoadBalancing,Istio,CloudRun"
@@ -30,9 +33,9 @@ steps:
   - run:
       name: "Create GKE Cluster"
       command: |
-              gcloud beta container clusters create CLUSTER_NAME \
+              gcloud beta container clusters create <<parameters.cluster-name>> \
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
-              <<# parameters.enable-stackdriver-kubernetes>>--enable-stackdriver-kubernetes \<</ parameters.enable-stackdriver-kubernetes>>
-              --scopes <<parameters.scope>>
+              <<# parameters.enable-stackdriver-kubernetes>>--enable-stackdriver-kubernetes \ <</ parameters.enable-stackdriver-kubernetes>>
+              --scopes <<parameters.scopes>>
