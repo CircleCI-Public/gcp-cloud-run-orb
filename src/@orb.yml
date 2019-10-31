@@ -7,4 +7,4 @@ description: >
 
 orbs:
   gcp-cli: circleci/gcp-cli@1.8.3
-  jq: circleci/jq@1.9.0
+  kube: circleci/kubernetes@0.10.0

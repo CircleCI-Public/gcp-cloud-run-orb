@@ -45,7 +45,6 @@ parameters:
 steps:
   - gcp-cli/install
   - gcp-cli/initialize
-  - jq/install
   - run:
       name: Cloud Run deploy
       command: |
@@ -121,4 +120,4 @@ steps:
   - run:
       name: "Get Service URL"
       command: |
-        gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format json | jq --raw-output [.status.address.url][0]
+        gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)"
