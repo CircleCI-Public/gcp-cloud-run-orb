@@ -23,7 +23,8 @@ integration-master_filters: &integration-master_filters
 
 prod-deploy_requires: &prod-deploy_requires
   [
-    build_and_deploy-prod
+    build_and_deploy-prod,
+    build_and_deploy_gke_on_prem-prod
   ]
 
 jobs:
@@ -32,6 +33,12 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - cloudrun/init
+      - cloudrun/create_gke_cluster:
+          machine-type: "n1-standard-4"
+          zone: "us-east1"
+          enable-stackdriver-kubernetes: true
+          scopes: "cloud-platform"
   build_and_deploy:
     docker:
       - image: cimg/base:stable
@@ -113,6 +120,16 @@ workflows:
 
       - build_and_deploy:
           name: build_and_deploy-prod
+          context: orb-publishing
+          filters: *integration-master_filters
+
+      - build_and_deploy_gke_on_prem:
+          name: build_and_deploy_gke_on_prem-dev
+          context: orb-publishing
+          filters: *integration-dev_filters
+
+      - build_and_deploy_gke_on_prem:
+          name: build_and_deploy_gke_on_prem-prod
           context: orb-publishing
           filters: *integration-master_filters
 

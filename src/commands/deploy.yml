@@ -87,6 +87,10 @@ steps:
             fi
             # End of parameter check
             # Deployment command
+            echo "Ensure all required APIs are enabled"
+            echo
+            gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
+            echo
             gcloud beta run deploy \
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
