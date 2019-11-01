@@ -110,8 +110,7 @@ steps:
             fi
             # End of parameter check
             gcloud components update
-            gcloud components install beta
-            gcloud components install kubectl
+            gcloud components install beta # remove Nov 12
             # Deployment command
             gcloud beta run deploy <<parameters.service-name>>\
             --kubeconfig <<parameters.kubeconfig>> \

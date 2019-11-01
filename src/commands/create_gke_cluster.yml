@@ -24,7 +24,7 @@ parameters:
   enable-stackdriver-kubernetes:
     type: boolean
     default: false
-    description: 'Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)' 
+    description: 'Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)'
   args:
     type: string
     default: ""
