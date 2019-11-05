@@ -42,14 +42,6 @@ parameters:
     type: string
     default: ""
     description: 'Zone in which the cluster is located. Required on "gke" and "kubernetes" platforms.'
-  kubeconfig:
-    type: string
-    default: ""
-    description: 'The absolute path to your kubectl config file. Required on "gke" and "kubernetes" platforms.'
-  kubecontext:
-    type: string
-    default: ""
-    description: 'The name of the context in your kubectl config file to use for connecting. Required on "gke" and "kubernetes" platforms.'
   deploy-args:
     type: string
     default: ""
@@ -69,8 +61,6 @@ steps:
       region: <<parameters.region>>
       cluster: <<parameters.cluster>>
       cluster-location: <<parameters.cluster-location>>
-      kubeconfig: <<parameters.kubeconfig>>
-      kubecontext: <<parameters.kubecontext>>
       args: <<parameters.deploy-args>>
 
 
