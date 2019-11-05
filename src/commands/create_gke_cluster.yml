@@ -34,8 +34,8 @@ steps:
       name: "Create GKE Cluster"
       command: |
               gcloud beta container clusters create <<parameters.cluster-name>> \
-              --addons=<<parameters.addons>> \
-              --machine-type=<<parameters.machine-type>> \
-              --zone=<<parameters.zone>> \
+              --addons <<parameters.addons>> \
+              --machine-type <<parameters.machine-type>> \
+              --zone <<parameters.zone>> \
               <<# parameters.enable-stackdriver-kubernetes>>--enable-stackdriver-kubernetes \ <</ parameters.enable-stackdriver-kubernetes>>
               --scopes <<parameters.scopes>>
