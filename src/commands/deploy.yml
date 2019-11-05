@@ -4,7 +4,7 @@ description: >
 parameters:
   platform:
     type: enum
-    enum: ["managed", "gke", "kubernetes"]
+    enum: ["managed", "gke"]
     default: "managed"
     description: 'Target platform'
   image:
@@ -26,14 +26,6 @@ parameters:
     type: string
     default: ""
     description: 'Zone in which the cluster is located. Required on "gke" and "kubernetes" platforms.'
-  kubeconfig:
-    type: string
-    default: "${GCP_KUBECONFIG}"
-    description: 'The absolute path to your kubectl config file. May also use an env var such as "${KUBECONFIG}" Required on "kubernetes" platforms.'
-  kubecontext:
-    type: string
-    default: ""
-    description: 'The name of the context in your kubectl config file to use for connecting. Required on "gke" and "kubernetes" platforms.'
   args:
     type: string
     default: ""
@@ -97,27 +89,6 @@ steps:
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform gke
-            ;;
-          kubernetes)
-            echo 'Platform: Kubernetes'
-            GCP_KUBECONFIG=<<parameters.kubeconfig>>
-            GCP_KUBECONTEXT=<<parameters.kubecontext>>
-            GCP_SERVICE_NAME=<<parameters.service-name>>
-            # Check for required parameters
-            if [ -z $GCP_KUBECONFIG ]; then
-              echo 'The kubeconfig parameter is required for the "kubernetes" platform.'
-              exit 1
-            fi
-            # End of parameter check
-            gcloud components update
-            gcloud components install beta # remove Nov 12
-            # Deployment command
-            gcloud beta run deploy <<parameters.service-name>>\
-            --kubeconfig <<parameters.kubeconfig>> \
-            <<#parameters.kubeconfig>>--context <<parameters.kubecontext>><</parameters.kubeconfig>>\
-            <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
-            <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
-            --platform kubernetes
             ;;
         esac
   - run:
