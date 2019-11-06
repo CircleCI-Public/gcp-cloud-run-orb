@@ -83,7 +83,7 @@ steps:
             echo
             gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
             echo
-            gcloud beta run deploy \
+            gcloud beta run deploy <<parameters.service-name>>\
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \

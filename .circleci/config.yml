@@ -41,6 +41,15 @@ jobs:
           zone: "us-east1"
           enable-stackdriver-kubernetes: true
           scopes: "cloud-platform"
+      - cloudrun/build:
+          tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          source: ./sample
+      - cloudrun/deploy:
+          plaform: "gke"
+          image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          region: "us-east1"
+          service-name: "example-service"
+          unauthenticated: true
   build_and_deploy:
     docker:
       - image: cimg/base:stable
@@ -59,7 +68,7 @@ jobs:
           platform: managed
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           service-name: "example-service"
-          region: us-east1
+          region: "us-east1"
           unauthenticated: true
 
 workflows:
