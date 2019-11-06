@@ -35,7 +35,7 @@ steps:
       command: |
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud beta container clusters create CLUSTER_NAME \
+              gcloud beta container clusters create <<parameters.cluster-name>>\
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
