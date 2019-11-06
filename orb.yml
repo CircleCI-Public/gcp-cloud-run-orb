@@ -84,9 +84,9 @@ commands:
     - run:
         command: |
           gcloud beta container clusters create <<parameters.cluster-name>> \
-          --addons=<<parameters.addons>> \
-          --machine-type=<<parameters.machine-type>> \
-          --zone=<<parameters.zone>> \
+          --addons <<parameters.addons>> \
+          --machine-type <<parameters.machine-type>> \
+          --zone <<parameters.zone>> \
           <<# parameters.enable-stackdriver-kubernetes>>--enable-stackdriver-kubernetes \ <</ parameters.enable-stackdriver-kubernetes>>
           --scopes <<parameters.scopes>>
         name: Create GKE Cluster
@@ -113,23 +113,12 @@ commands:
         default: ""
         description: Name of the container image to deploy (e.g. gcr.io/cloudrun/hello:latest).
         type: string
-      kubeconfig:
-        default: ${GCP_KUBECONFIG}
-        description: The absolute path to your kubectl config file. May also use an
-          env var such as "${KUBECONFIG}" Required on "kubernetes" platforms.
-        type: string
-      kubecontext:
-        default: ""
-        description: The name of the context in your kubectl config file to use for
-          connecting. Required on "gke" and "kubernetes" platforms.
-        type: string
       platform:
         default: managed
         description: Target platform
         enum:
         - managed
         - gke
-        - kubernetes
         type: enum
       region:
         default: ""
@@ -196,28 +185,6 @@ commands:
               <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
               <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
               --platform gke
-              ;;
-            kubernetes)
-              echo 'Platform: Kubernetes'
-              GCP_KUBECONFIG=<<parameters.kubeconfig>>
-              GCP_KUBECONTEXT=<<parameters.kubecontext>>
-              GCP_SERVICE_NAME=<<parameters.service-name>>
-              # Check for required parameters
-              if [ -z $GCP_KUBECONFIG ]; then
-                echo 'The kubeconfig parameter is required for the "kubernetes" platform.'
-                exit 1
-              fi
-              # End of parameter check
-              gcloud components update
-              gcloud components install beta
-              gcloud components install kubectl
-              # Deployment command
-              gcloud beta run deploy <<parameters.service-name>>\
-              --kubeconfig <<parameters.kubeconfig>> \
-              <<#parameters.kubeconfig>>--context <<parameters.kubecontext>><</parameters.kubeconfig>>\
-              <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
-              <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
-              --platform kubernetes
               ;;
           esac
         name: Cloud Run deploy
@@ -298,16 +265,6 @@ jobs:
         default: ""
         description: Name of the container image to deploy (e.g. gcr.io/cloudrun/hello:latest).
         type: string
-      kubeconfig:
-        default: ""
-        description: The absolute path to your kubectl config file. Required on "gke"
-          and "kubernetes" platforms.
-        type: string
-      kubecontext:
-        default: ""
-        description: The name of the context in your kubectl config file to use for
-          connecting. Required on "gke" and "kubernetes" platforms.
-        type: string
       platform:
         default: managed
         description: Target platform
@@ -353,8 +310,6 @@ jobs:
         cluster: <<parameters.cluster>>
         cluster-location: <<parameters.cluster-location>>
         image: <<parameters.image>>
-        kubeconfig: <<parameters.kubeconfig>>
-        kubecontext: <<parameters.kubecontext>>
         platform: <<parameters.platform>>
         region: <<parameters.region>>
         service-name: <<parameters.service-name>>

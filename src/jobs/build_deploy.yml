@@ -62,6 +62,3 @@ steps:
       cluster: <<parameters.cluster>>
       cluster-location: <<parameters.cluster-location>>
       args: <<parameters.deploy-args>>
-
-
-
