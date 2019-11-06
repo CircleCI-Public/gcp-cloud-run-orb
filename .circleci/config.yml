@@ -46,6 +46,7 @@ jobs:
           source: ./sample
       - cloudrun/deploy:
           platform: "gke"
+          cluster: "example-cluster"
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           region: "us-east1"
           service-name: "example-service"
