@@ -25,18 +25,18 @@ integration-master_filters: &integration-master_filters
 prod-deploy_requires: &prod-deploy_requires
   [
     build_and_deploy-prod,
-    build_and_deploy_gke_on_prem-prod
+    build_and_deploy_gke-prod
   ]
 
 jobs:
-  build_and_deploy_gke_on_prem:
+  build_and_deploy_gke:
     docker:
       - image: cimg/base:stable
     steps:
       - checkout
       - cloudrun/init
       - cloudrun/create_gke_cluster:
-          cluster-name: "example-cluster"
+          cluster-name: "example-cluster-${CIRCLE_SHA1}"
           machine-type: "n1-standard-4"
           zone: "us-east1"
           enable-stackdriver-kubernetes: true
@@ -46,10 +46,10 @@ jobs:
           source: ./sample
       - cloudrun/deploy:
           platform: "gke"
-          cluster: "example-cluster"
+          cluster: "example-cluster-${CIRCLE_SHA1}"
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           region: "us-east1"
-          service-name: "example-service"
+          service-name: "example-service-${CIRCLE_SHA1}"
           unauthenticated: true
   build_and_deploy:
     docker:
@@ -135,13 +135,13 @@ workflows:
           context: orb-publishing
           filters: *integration-master_filters
 
-      - build_and_deploy_gke_on_prem:
-          name: build_and_deploy_gke_on_prem-dev
+      - build_and_deploy_gke:
+          name: build_and_deploy_gke-dev
           context: orb-publishing
           filters: *integration-dev_filters
 
-      - build_and_deploy_gke_on_prem:
-          name: build_and_deploy_gke_on_prem-prod
+      - build_and_deploy_gke:
+          name: build_and_deploy_gke-prod
           context: orb-publishing
           filters: *integration-master_filters
 
