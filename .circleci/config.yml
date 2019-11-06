@@ -49,7 +49,7 @@ jobs:
           cluster: "example-cluster-${CIRCLE_BUILD_NUM}"
           image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
           cluster-location: "us-east1"
-          service-name: "example-service-${CIRCLE_BUILD_NUM	}"
+          service-name: "example-service-${CIRCLE_BUILD_NUM}"
           unauthenticated: true
   build_and_deploy:
     docker:
