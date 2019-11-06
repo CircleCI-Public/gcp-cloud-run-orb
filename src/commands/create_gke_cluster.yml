@@ -39,5 +39,5 @@ steps:
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
-              <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes \<</ parameters.enable-stackdriver-kubernetes >>
-              --scopes <<parameters.scopes>>
+              --scopes <<parameters.scopes>> \
+              <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >>
