@@ -35,8 +35,6 @@ parameters:
     default: false
     description: "Whether to enable allowing unauthenticated access to the service."
 steps:
-  - gcp-cli/install
-  - gcp-cli/initialize
   - run:
       name: Cloud Run deploy
       command: |
@@ -86,6 +84,7 @@ steps:
             gcloud beta run deploy <<parameters.service-name>>\
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
+            --image <<parameters.image>> \
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform gke
