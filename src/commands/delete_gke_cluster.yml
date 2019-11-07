@@ -19,6 +19,6 @@ steps:
       command: |
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud container clusters delete <<parameters.cluster-name>> \
-              --zone=<<parameters.zone>> << parameters.args >> -y
+              yes | gcloud container clusters delete <<parameters.cluster-name>> \
+              --zone=<<parameters.zone>> << parameters.args >>
 
