@@ -1,0 +1,24 @@
+# How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+description: >
+  Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
+parameters:
+  cluster-name:
+    type: string
+    description: "The name of the cluster"
+  zone:
+    type: string
+    default: ""
+    description: 'Compute zone (e.g. us-central1-a) for the cluster.'
+  args:
+    type: string
+    default: ""
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+steps:
+  - run:
+      name: "Delete GKE Cluster"
+      command: |
+              gcloud config set run/platform gke
+              gcloud config set project $GOOGLE_PROJECT_ID
+              gcloud container clusters delete <<parameters.cluster-name>> \
+              --zone=<<parameters.zone>> << parameters.args >>
+
