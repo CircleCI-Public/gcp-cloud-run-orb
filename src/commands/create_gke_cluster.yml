@@ -40,4 +40,5 @@ steps:
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
               --scopes <<parameters.scopes>> \
+              --cluster-version 1.12.10-gke.15 \
               <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >> << parameters.args >>

@@ -54,7 +54,7 @@ jobs:
       #     zone: "us-east1"
       #     cluster-name: "example-cluster-${CIRCLE_BUILD_NUM}"
 
-  build_and_deploy:
+  build_and_deploy_managed:
     docker:
       - image: cimg/base:stable
     steps:
