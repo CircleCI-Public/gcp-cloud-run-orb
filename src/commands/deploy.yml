@@ -86,6 +86,8 @@ steps:
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
-            --platform gke
+            --platform
+            gcloud container clusters describe <<parameters.cluster>>
+            gcloud container clusters describe <<parameters.cluster>> --format="value(status.address.url)"
             ;;
         esac
