@@ -86,7 +86,7 @@ steps:
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
-            --platform
+            --platform gke
 
             gcloud container clusters describe <<parameters.cluster>>
 
