@@ -61,7 +61,9 @@ steps:
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform managed
-            $GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
+            
+            GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
+            echo $GCP_DEPLOY_ENDPOINT
             ;;
           gke)
             echo 'Platform: GKE'
@@ -87,6 +89,8 @@ steps:
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
             --platform gke
-            $GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>> --format="value(endpoint)")
+
+            GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>> --format="value(endpoint)")
+            echo $GCP_DEPLOY_ENDPOINT
             ;;
         esac
