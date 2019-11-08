@@ -90,7 +90,7 @@ steps:
             --image <<parameters.image>> \
             --platform gke
 
-            GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>> --format="value(endpoint)")
+            GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>>)
             echo $GCP_DEPLOY_ENDPOINT
             ;;
         esac
