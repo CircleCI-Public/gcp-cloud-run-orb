@@ -89,7 +89,7 @@ steps:
             --platform
 
             gcloud container clusters describe <<parameters.cluster>>
-            
+
             gcloud container clusters describe <<parameters.cluster>> --format="value(status.address.url)"
             ;;
         esac
