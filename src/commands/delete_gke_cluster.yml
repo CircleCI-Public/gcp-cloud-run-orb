@@ -16,8 +16,10 @@ parameters:
 steps:
   - run:
       name: "Delete GKE Cluster"
+      no_output_timeout: 20m
       command: |
               CLOUDSDK_CORE_DISABLE_PROMPTS=1
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
               gcloud container clusters delete <<parameters.cluster-name>> --zone=<<parameters.zone>> --no-user-output-enabled << parameters.args >>
+              echo "Clusters deleted."
