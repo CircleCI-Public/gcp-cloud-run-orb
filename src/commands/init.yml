@@ -1,0 +1,9 @@
+# How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+description: >
+  Install and initialize the GCP CLI for Google Cloud Run.
+steps:
+  - gcp-cli/install
+  - gcp-cli/initialize
+  - run:
+      name: "Prep Cloud Run components"
+      command: gcloud components install beta && gcloud components update # Nov 12th 2019, switch to component update only.

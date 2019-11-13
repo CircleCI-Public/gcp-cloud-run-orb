@@ -1,0 +1,44 @@
+# How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
+description: >
+  'Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
+  Learn more: https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy-gke'
+parameters:
+  cluster-name:
+    type: string
+    description: "The name of the cluster"
+  addons:
+    type: string
+    default: "HorizontalPodAutoscaling,HttpLoadBalancing,Istio,CloudRun"
+    description: 'Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components. Addons specified by this flag will be enabled. The others will be disabled. '
+  machine-type:
+    type: string
+    default: "n1-standard-1"
+    description: 'The type of machine to use for nodes. The list of predefined machine types is available using the following command.'
+  zone:
+    type: string
+    default: ""
+    description: 'Compute zone (e.g. us-central1-a) for the cluster.'
+  scopes:
+    type: string
+    default: "gke-default"
+    description: 'Specifies scopes for the node instances.'
+  enable-stackdriver-kubernetes:
+    type: boolean
+    default: false
+    description: 'Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)'
+  args:
+    type: string
+    default: ""
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+steps:
+  - run:
+      name: "Create GKE Cluster"
+      command: |
+              gcloud config set run/platform gke
+              gcloud config set project $GOOGLE_PROJECT_ID
+              gcloud beta container clusters create <<parameters.cluster-name>> \
+              --addons=<<parameters.addons>> \
+              --machine-type=<<parameters.machine-type>> \
+              --zone=<<parameters.zone>> \
+              --scopes <<parameters.scopes>> \
+              <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >> << parameters.args >>

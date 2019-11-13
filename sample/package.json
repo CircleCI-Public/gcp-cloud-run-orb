@@ -1,0 +1,15 @@
+{
+  "name": "cloud-run-orb-sample-app",
+  "version": "1.0.0",
+  "description": "sample application to show the cloud run orb for CircleCI. Based off the quickstart guide https://cloud.google.com/run/docs/quickstarts/build-and-deploy",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "@KyleTryon",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
