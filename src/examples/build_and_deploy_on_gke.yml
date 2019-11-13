@@ -19,16 +19,12 @@ usage:
             scopes: "cloud-platform"
         - cloudrun/build:
             tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
-            source: ./sample
         - cloudrun/deploy:
             platform: "gke"
             cluster: "example-cluster-${CIRCLE_BUILD_NUM}"
             image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
             cluster-location: "us-east1"
             service-name: "example-service-${CIRCLE_BUILD_NUM}"
-        - cloudrun/delete_gke_cluster:
-            zone: "us-east1"
-            cluster-name: "example-cluster-${CIRCLE_BUILD_NUM}"
   workflows:
     build_and_deploy_to_gke_workflow:
       jobs:

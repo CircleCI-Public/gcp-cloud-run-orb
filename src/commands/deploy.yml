@@ -1,6 +1,6 @@
 # How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
 description: >
-  Build your container image using Cloud Build.
+  'Deploy your containerized application to Google Cloud Run. Learn more: https://cloud.google.com/run/docs/deploying'
 parameters:
   platform:
     type: enum

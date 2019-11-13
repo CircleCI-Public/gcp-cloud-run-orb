@@ -1,0 +1,312 @@
+commands:
+  build:
+    description: |
+      'Build your container image using Cloud Run Build. Learn more: https://cloud.google.com/run/docs/quickstarts/build-and-deploy'
+    parameters:
+      args:
+        default: ""
+        description: 'Add any additional arguments not explicitly defined as a parameter.
+          Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/builds/submit'
+        type: string
+      config:
+        default: ""
+        description: The YAML or JSON file to use as the build configuration file.
+        type: string
+      source:
+        default: ""
+        description: The location of the source to build. The location can be a directory
+          on a local disk or a gzipped archive file (.tar.gz) in Google Cloud Storage.
+          If a dockerfile is present in the working directory, this parameter may
+          be left blank.
+        type: string
+      tag:
+        default: ""
+        description: The tag to use with a "docker build" image creation. Cloud Build
+          will run a remote "docker build -t $TAG .", where $TAG is the tag provided
+          by this flag. The tag must be in the gcr.io/* or *.gcr.io/* namespaces.
+          Specify a tag if you want Cloud Build to build using a Dockerfile instead
+          of a build config file. If you specify a tag in this command, your source
+          must include a Dockerfile. For instructions on building using a Dockerfile
+          see https://cloud.google.com/cloud-build/docs/quickstart-docker.
+        type: string
+    steps:
+    - run:
+        command: |
+          # if no source parameter is set, check for a docker file and fail if none is found.
+          <<^ parameters.source >>
+          if [ -f dockerfile ]; then
+            echo "No docker image in $(pwd). You may need to specify a source location."
+            exit 1
+          fi
+          <</ parameters.source >>
+          gcloud builds submit \
+          <<# parameters.source>><< parameters.source >><</ parameters.source>> \
+          <<# parameters.tag>>--tag << parameters.tag >><</ parameters.tag>> \
+          <<# parameters.config>>--config << parameters.config >><</ parameters.config>> \
+          << parameters.args >>
+        name: Cloud Run Build
+  create_gke_cluster:
+    description: |
+      'Create a cluster and enable it for Cloud Run for Anthos on Google Cloud Learn more: https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy-gke'
+    parameters:
+      addons:
+        default: HorizontalPodAutoscaling,HttpLoadBalancing,Istio,CloudRun
+        description: 'Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig)
+          are additional Kubernetes cluster components. Addons specified by this flag
+          will be enabled. The others will be disabled. '
+        type: string
+      args:
+        default: ""
+        description: 'Add any additional arguments not explicitly defined as a parameter.
+          Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes'
+        type: string
+      cluster-name:
+        description: The name of the cluster
+        type: string
+      enable-stackdriver-kubernetes:
+        default: false
+        description: Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)
+        type: boolean
+      machine-type:
+        default: n1-standard-1
+        description: The type of machine to use for nodes. The list of predefined
+          machine types is available using the following command.
+        type: string
+      scopes:
+        default: gke-default
+        description: Specifies scopes for the node instances.
+        type: string
+      zone:
+        default: ""
+        description: Compute zone (e.g. us-central1-a) for the cluster.
+        type: string
+    steps:
+    - run:
+        command: |
+          gcloud config set run/platform gke
+          gcloud config set project $GOOGLE_PROJECT_ID
+          gcloud beta container clusters create <<parameters.cluster-name>> \
+          --addons=<<parameters.addons>> \
+          --machine-type=<<parameters.machine-type>> \
+          --zone=<<parameters.zone>> \
+          --scopes <<parameters.scopes>> \
+          <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >> << parameters.args >>
+        name: Create GKE Cluster
+  delete_gke_cluster:
+    description: |
+      Delete an existing GCloud cluster.
+    parameters:
+      args:
+        default: ""
+        description: 'Add any additional arguments not explicitly defined as a parameter.
+          Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes'
+        type: string
+      cluster-name:
+        description: The name of the cluster
+        type: string
+      zone:
+        default: ""
+        description: Compute zone (e.g. us-central1-a) for the cluster.
+        type: string
+    steps:
+    - run:
+        command: |
+          CLOUDSDK_CORE_DISABLE_PROMPTS=1
+          gcloud config set run/platform gke
+          gcloud config set project $GOOGLE_PROJECT_ID
+          gcloud container clusters delete <<parameters.cluster-name>> --zone=<<parameters.zone>> --no-user-output-enabled << parameters.args >>
+          echo "Clusters deleted."
+        name: Delete GKE Cluster
+        no_output_timeout: 20m
+  deploy:
+    description: |
+      Build your container image using Cloud Build.
+    parameters:
+      args:
+        default: ""
+        description: 'Add any additional arguments not explicitly defined as a parameter.
+          Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy'
+        type: string
+      cluster:
+        default: ""
+        description: ID of the cluster or fully qualified identifier for the cluster.
+          Required on "gke" and "kubernetes" platforms.
+        type: string
+      cluster-location:
+        default: ""
+        description: Zone in which the cluster is located. Required on "gke" and "kubernetes"
+          platforms.
+        type: string
+      image:
+        default: ""
+        description: Name of the container image to deploy (e.g. gcr.io/cloudrun/hello:latest).
+        type: string
+      platform:
+        default: managed
+        description: Target platform
+        enum:
+        - managed
+        - gke
+        type: enum
+      region:
+        default: ""
+        description: Required on "managed" platform.
+        type: string
+      service-name:
+        description: What is the name of the service being deployed?
+        type: string
+      unauthenticated:
+        default: false
+        description: Whether to enable allowing unauthenticated access to the service.
+        type: boolean
+    steps:
+    - run:
+        command: |
+          PLATFORM=<<parameters.platform>>
+          case $PLATFORM in
+            managed)
+              echo 'Platform: Managed'
+              # Check for required parameters
+              GCP_REGION=<<parameters.region>>
+              GCP_SERVICE_NAME=<<parameters.service-name>>
+              if [ -z $GCP_REGION ]; then
+                echo 'The region parameter is required for the "managed" platform.'
+                exit 1
+              fi
+              if [ -z $GCP_SERVICE_NAME ]; then
+                echo 'The service-name parameter is required for the "managed" platform.'
+                exit 1
+              fi
+              # End of parameter check
+              # Deployment command
+              gcloud beta run deploy <<parameters.service-name>> \
+              --image <<parameters.image>> \
+              --region <<parameters.region>> \
+              <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
+              <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
+              --platform managed
+
+              GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
+              echo $GCP_DEPLOY_ENDPOINT
+              ;;
+            gke)
+              echo 'Platform: GKE'
+              # Check for required parameters
+              GCP_CLUSTER=<<parameters.cluster>>
+              GCP_CLUSTER_LOCATION=<<parameters.cluster-location>>
+              if [ -z $GCP_CLUSTER ]; then
+                echo 'The cluster parameter is required for the "gke" platform.'
+                exit 1
+              fi
+              if [ -z $GCP_CLUSTER_LOCATION ]; then
+                echo 'The cluster-location parameter is required for the "gke" platform.'
+                exit 1
+              fi
+              # End of parameter check
+              # Deployment command
+              echo "Ensure all required APIs are enabled"
+              echo
+              gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
+              echo
+              gcloud beta run deploy <<parameters.service-name>>\
+              --cluster <<parameters.cluster>> \
+              --cluster-location <<parameters.cluster-location>> \
+              --image <<parameters.image>> \
+              --platform gke
+
+              GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>>)
+              echo $GCP_DEPLOY_ENDPOINT
+              ;;
+          esac
+        name: Cloud Run deploy
+  init:
+    description: |
+      Install and initialize the GCP CLI for Google Cloud Run.
+    steps:
+    - gcp-cli/install
+    - gcp-cli/initialize
+    - run:
+        command: gcloud components install beta && gcloud components update
+        name: Prep Cloud Run components
+description: |
+  'Build and deploy stateless images to Google Cloud Run as serverless applications. Repo: https://github.com/CircleCI-Public/gcp-cloud-run-orb Home: https://cloud.google.com/run/'
+examples:
+  build_and_deploy_on_gke:
+    description: |
+      Automatically build and deploy a docker container using the Cloud Run managed platform.
+    usage:
+      jobs:
+        build_and_deploy_gke:
+          docker:
+          - image: cimg/base:stable
+          steps:
+          - checkout
+          - cloudrun/init
+          - cloudrun/create_gke_cluster:
+              cluster-name: example-cluster-${CIRCLE_BUILD_NUM}
+              enable-stackdriver-kubernetes: true
+              machine-type: n1-standard-4
+              scopes: cloud-platform
+              zone: us-east1
+          - cloudrun/build:
+              source: ./sample
+              tag: gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}
+          - cloudrun/deploy:
+              cluster: example-cluster-${CIRCLE_BUILD_NUM}
+              cluster-location: us-east1
+              image: gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}
+              platform: gke
+              service-name: example-service-${CIRCLE_BUILD_NUM}
+          - cloudrun/delete_gke_cluster:
+              cluster-name: example-cluster-${CIRCLE_BUILD_NUM}
+              zone: us-east1
+      orbs:
+        cloudrun: circleci/gcp-cloud-run@x.y
+      version: 2.1
+      workflows:
+        build_and_deploy_to_gke_workflow:
+          jobs:
+          - build_and_deploy_gke
+  build_and_deploy_on_managed:
+    description: |
+      Automatically build and deploy a docker container using the Cloud Run managed platform.
+    usage:
+      jobs:
+        build_and_deploy:
+          docker:
+          - image: cimg/base:stable
+          steps:
+          - checkout
+          - cloudrun/init
+          - cloudrun/build:
+              tag: gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}
+          - cloudrun/deploy:
+              image: gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}
+              platform: managed
+              region: us-east1
+              service-name: example-service
+              unauthenticated: true
+      orbs:
+        cloudrun: circleci/gcp-cloud-run@x.y
+      version: 2.1
+      workflows:
+        build_and_deploy_to_managed_workflow:
+          jobs:
+          - build_and_deploy
+executors:
+  default:
+    description: |
+      Base CircleCI docker image.
+    docker:
+    - image: cimg/base:<<parameters.tag>>
+    parameters:
+      tag:
+        default: stable
+        description: |
+          Pick a specific cimg/base image tag: https://hub.docker.com/r/cimg/base/tags
+        type: string
+orbs:
+  gcp-cli: circleci/gcp-cli@1.8.3
+  kube: circleci/kubernetes@0.10.0
+version: 2.1
+
