@@ -1,5 +1,6 @@
 description: >
-  Build your container image using Cloud Run Build.
+  'Build your container image using Cloud Run Build.
+  Learn more: https://cloud.google.com/run/docs/quickstarts/build-and-deploy'
 parameters:
   source:
     type: string

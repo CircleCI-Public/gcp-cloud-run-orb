@@ -1,6 +1,6 @@
 # How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
 description: >
-  Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
+  Delete an existing GCloud cluster.
 parameters:
   cluster-name:
     type: string
