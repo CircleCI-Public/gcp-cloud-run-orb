@@ -1,6 +1,7 @@
 # How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
 description: >
-  'Deploy your containerized application to Google Cloud Run. Learn more: https://cloud.google.com/run/docs/deploying'
+  'Deploy your containerized application to Google Cloud Run. Learn more: https://cloud.google.com/run/docs/deploying
+  For the managed service: After deployment, the service URL will be accessible via the $GCP_DEPLOY_ENDPOINT environment variable.'
 parameters:
   platform:
     type: enum

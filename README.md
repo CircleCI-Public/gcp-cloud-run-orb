@@ -4,4 +4,6 @@ Easily add [Google Cloud Run](https://cloud.google.com/run/) deployments to your
 
 Full documentation: https://circleci.com/orbs/registry/orb/circleci/gcp-cloud-run
 
+Want to see simplified live example getting-started project? Check this out!: https://github.com/CircleCI-Public/gcp-cloud-run-sample-project
+
 Learn more about [Orbs](https://circleci.com/docs/2.0/using-orbs/ "Using Orbs").

@@ -19,6 +19,18 @@ usage:
             service-name: "example-service"
             region: "us-east1"
             unauthenticated: true
+        - run:
+          name: Test managed deployed service.
+          command: |
+            # A simple example of how a deployed managed service could be verified or further tested.
+            # This step will send request our "API" and fail if there is unexpected output.
+            GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
+            if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
+              echo "Result is unexpected"
+              echo 'Result: '
+              curl -s "$GCP_DEPLOY_ENDPOINT"
+              exit 1;
+            fi
   workflows:
     build_and_deploy_to_managed_workflow:
       jobs:
