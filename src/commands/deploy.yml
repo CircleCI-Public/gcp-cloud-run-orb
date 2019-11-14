@@ -61,7 +61,9 @@ steps:
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
             --platform managed
-
+            echo
+            echo "Service deployed"
+            echo
             GET_GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
             echo "export GCP_DEPLOY_ENDPOINT=$GET_GCP_DEPLOY_ENDPOINT" >> $BASH_ENV
             source $BASH_ENV
@@ -91,8 +93,8 @@ steps:
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
             --platform gke
-
-            GCP_DEPLOY_ENDPOINT=$(gcloud container clusters describe <<parameters.cluster>>)
-            echo $GCP_DEPLOY_ENDPOINT
+            echo
+            echo "Service deployed"
+            echo
             ;;
         esac

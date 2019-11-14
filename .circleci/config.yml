@@ -74,6 +74,16 @@ jobs:
           service-name: "example-service"
           region: "us-east1"
           unauthenticated: true
+      - run:
+          name: Test managed deployed service.
+          command: |
+            GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
+            if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
+              echo "Result is unexpected"
+              echo 'Result: '
+              curl -s "$GCP_DEPLOY_ENDPOINT"
+              exit 1;
+            fi
 
 workflows:
   # this `lint-pack_validate_publish-dev` workflow will run on any commit
