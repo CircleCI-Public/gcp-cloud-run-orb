@@ -10,10 +10,10 @@ usage:
         - image: cimg/base:stable
       steps:
         - checkout
-        - cloudrun/init
-        - cloudrun/build:
+        - gcp-cloud-run/init
+        - gcp-cloud-run/build:
             tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
-        - cloudrun/deploy:
+        - gcp-cloud-run/deploy:
             platform: managed
             image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
             service-name: "example-service"
