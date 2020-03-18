@@ -3,23 +3,23 @@ description: >
 usage:
   version: 2.1
   orbs:
-    cloudrun: circleci/gcp-cloud-run@x.y
+    gcp-cloud-run: circleci/gcp-cloud-run@x.y
   jobs:
     build_and_deploy_gke:
       docker:
         - image: cimg/base:stable
       steps:
         - checkout
-        - cloudrun/init
-        - cloudrun/create_gke_cluster:
+        - gcp-cloud-run/init
+        - gcp-cloud-run/create_gke_cluster:
             cluster-name: "example-cluster-${CIRCLE_BUILD_NUM}"
             machine-type: "n1-standard-4"
             zone: "us-east1"
             enable-stackdriver-kubernetes: true
             scopes: "cloud-platform"
-        - cloudrun/build:
+        - gcp-cloud-run/build:
             tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
-        - cloudrun/deploy:
+        - gcp-cloud-run/deploy:
             platform: "gke"
             cluster: "example-cluster-${CIRCLE_BUILD_NUM}"
             image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
