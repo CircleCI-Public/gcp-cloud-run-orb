@@ -3,7 +3,7 @@ description: >
 usage:
   version: 2.1
   orbs:
-    cloudrun: circleci/gcp-cloud-run@x.y
+    gcp-cloud-run: circleci/gcp-cloud-run@x.y
   jobs:
     build_and_deploy_gke:
       docker:
