@@ -61,7 +61,7 @@ steps:
             --region <<parameters.region>> \
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
             <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
-            --platform managed
+            --platform managed << parameters.args >>
             echo
             echo "Service deployed"
             echo
@@ -93,7 +93,7 @@ steps:
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
-            --platform gke
+            --platform gke << parameters.args >>
             echo
             echo "Service deployed"
             echo
