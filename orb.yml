@@ -34,7 +34,7 @@ commands:
         command: |
           # if no source parameter is set, check for a docker file and fail if none is found.
           <<^ parameters.source >>
-          if [ -f dockerfile ]; then
+          if [ -f Dockerfile ]; then
             echo "No docker image in $(pwd). You may need to specify a source location."
             exit 1
           fi
