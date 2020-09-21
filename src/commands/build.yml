@@ -22,10 +22,10 @@ steps:
   - run:
       name: "Cloud Run Build"
       command: |
-              # if no source parameter is set, check for a docker file and fail if none is found.
+              # if no source parameter is set, check for a Dockerfile and fail if none is found.
               <<^ parameters.source >>
-              if [ -f dockerfile ]; then
-                echo "No docker image in $(pwd). You may need to specify a source location."
+              if [ ! -f Dockerfile ]; then
+                echo "No Dockerfile in $(pwd). You may need to specify a source location."
                 exit 1
               fi
               <</ parameters.source >>
