@@ -1,10 +1,9 @@
-version: 2.1
-
-description: >
-  'Build and deploy stateless images to Google Cloud Run as serverless applications.
-  Repo: https://github.com/CircleCI-Public/gcp-cloud-run-orb
-  Home: https://cloud.google.com/run/'
-
+description: |
+  'Build and deploy stateless images to Google Cloud Run as serverless applications. Repo: https://github.com/CircleCI-Public/gcp-cloud-run-orb Home: https://cloud.google.com/run/'
+display:
+  source_url: https://github.com/circleci-public/gcp-cloud-run-orb
 orbs:
   gcp-cli: circleci/gcp-cli@1.8.3
   kube: circleci/kubernetes@0.10.0
+version: 2.1
+
