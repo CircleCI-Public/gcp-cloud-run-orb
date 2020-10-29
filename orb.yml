@@ -16,7 +16,7 @@ commands:
         default: ""
         description: The location of the source to build. The location can be a directory
           on a local disk or a gzipped archive file (.tar.gz) in Google Cloud Storage.
-          If a dockerfile is present in the working directory, this parameter may
+          If a Dockerfile is present in the working directory, this parameter may
           be left blank.
         type: string
       tag:
@@ -34,7 +34,7 @@ commands:
         command: |
           # if no source parameter is set, check for a docker file and fail if none is found.
           <<^ parameters.source >>
-          if [ -f dockerfile ]; then
+          if [ ! -f Dockerfile ]; then
             echo "No docker image in $(pwd). You may need to specify a source location."
             exit 1
           fi
