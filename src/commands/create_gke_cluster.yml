@@ -29,14 +29,14 @@ parameters:
   args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/container/clusters/create#--enable-stackdriver-kubernetes"
 steps:
   - run:
       name: "Create GKE Cluster"
       command: |
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud beta container clusters create <<parameters.cluster-name>> \
+              gcloud container clusters create <<parameters.cluster-name>> \
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \

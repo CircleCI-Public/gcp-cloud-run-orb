@@ -12,7 +12,7 @@ parameters:
   args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/container/clusters/create#--enable-stackdriver-kubernetes"
 steps:
   - run:
       name: "Delete GKE Cluster"
@@ -21,5 +21,5 @@ steps:
               CLOUDSDK_CORE_DISABLE_PROMPTS=1
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud container clusters delete <<parameters.cluster-name>> --zone=<<parameters.zone>> --no-user-output-enabled << parameters.args >>
+              gcloud container clusters delete <<parameters.cluster-name>> --zone=<<parameters.zone>> --quiet << parameters.args >>
               echo "Clusters deleted."

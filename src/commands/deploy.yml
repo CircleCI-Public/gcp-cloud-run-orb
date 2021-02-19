@@ -1,7 +1,7 @@
 # How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
-description: >
-  'Deploy your containerized application to Google Cloud Run. Learn more: https://cloud.google.com/run/docs/deploying
-  For the managed service: After deployment, the service URL will be accessible via the $GCP_DEPLOY_ENDPOINT environment variable.'
+description: |
+  Deploy your containerized application to Google Cloud Run. Learn more: https://cloud.google.com/run/docs/deploying
+  For the managed service: After deployment, the service URL will be accessible via the $GCP_DEPLOY_ENDPOINT environment variable.
 parameters:
   platform:
     type: enum
@@ -30,7 +30,7 @@ parameters:
   args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/run/deploy"
   unauthenticated:
     type: boolean
     default: false
@@ -56,7 +56,7 @@ steps:
             fi
             # End of parameter check
             # Deployment command
-            gcloud beta run deploy <<parameters.service-name>> \
+            gcloud run deploy <<parameters.service-name>> \
             --image <<parameters.image>> \
             --region <<parameters.region>> \
             <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
@@ -65,7 +65,7 @@ steps:
             echo
             echo "Service deployed"
             echo
-            GET_GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
+            GET_GCP_DEPLOY_ENDPOINT=$(gcloud run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
             echo "export GCP_DEPLOY_ENDPOINT=$GET_GCP_DEPLOY_ENDPOINT" >> $BASH_ENV
             source $BASH_ENV
             echo $GCP_DEPLOY_ENDPOINT
@@ -89,7 +89,7 @@ steps:
             echo
             gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
             echo
-            gcloud beta run deploy <<parameters.service-name>>\
+            gcloud run deploy <<parameters.service-name>>\
             --cluster <<parameters.cluster>> \
             --cluster-location <<parameters.cluster-location>> \
             --image <<parameters.image>> \
