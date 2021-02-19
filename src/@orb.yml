@@ -8,3 +8,9 @@ description: >
 orbs:
   gcp-cli: circleci/gcp-cli@1.8.3
   kube: circleci/kubernetes@0.10.0
+
+display:
+  source_ur: https://github.com/CircleCI-Public/gcp-cloud-run-orb
+  home_url: https://cloud.google.com/run/'
+
+
