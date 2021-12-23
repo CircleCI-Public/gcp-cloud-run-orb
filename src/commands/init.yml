@@ -20,3 +20,6 @@ steps:
       gcloud-service-key: <<parameters.gcloud-service-key>>
       google-compute-zone: <<parameters.google-compute-zone>>
       google-project-id: <<parameters.google-project-id>>
+  - run:
+      name: "Prep Cloud Run components"
+      command: gcloud components update
