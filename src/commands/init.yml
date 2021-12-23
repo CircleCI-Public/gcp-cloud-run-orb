@@ -20,6 +20,3 @@ steps:
       gcloud-service-key: <<parameters.gcloud-service-key>>
       google-compute-zone: <<parameters.google-compute-zone>>
       google-project-id: <<parameters.google-project-id>>
-  - run:
-      name: "Prep Cloud Run components"
-      command: gcloud components install beta && gcloud components update # Nov 12th 2019, switch to component update only.
