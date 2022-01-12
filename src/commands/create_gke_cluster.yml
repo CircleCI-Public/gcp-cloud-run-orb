@@ -22,10 +22,6 @@ parameters:
     type: string
     default: "gke-default"
     description: 'Specifies scopes for the node instances.'
-  enable-stackdriver-kubernetes:
-    type: boolean
-    default: false
-    description: 'Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)'
   args:
     type: string
     default: ""
@@ -36,9 +32,10 @@ steps:
       command: |
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud container clusters create <<parameters.cluster-name>> \
+              gcloud components install kubectl
+              gcloud beta container clusters create <<parameters.cluster-name>> \
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
               --scopes <<parameters.scopes>> \
-              <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >> << parameters.args >>
+              << parameters.args >>
