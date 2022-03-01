@@ -8,7 +8,7 @@ parameters:
     description: "The name of the cluster"
   addons:
     type: string
-    default: "HorizontalPodAutoscaling,HttpLoadBalancing,CloudRun"
+    default: "HorizontalPodAutoscaling,HttpLoadBalancing"
     description: 'Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components. Addons specified by this flag will be enabled. The others will be disabled. '
   machine-type:
     type: string
@@ -33,7 +33,7 @@ steps:
               gcloud config set run/platform gke
               gcloud config set project $GOOGLE_PROJECT_ID
               gcloud components install kubectl
-              gcloud beta container clusters create <<parameters.cluster-name>> \
+              gcloud container clusters create <<parameters.cluster-name>> \
               --addons=<<parameters.addons>> \
               --machine-type=<<parameters.machine-type>> \
               --zone=<<parameters.zone>> \
