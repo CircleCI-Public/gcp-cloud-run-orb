@@ -9,19 +9,19 @@ parameters:
   addons:
     type: string
     default: "HorizontalPodAutoscaling,HttpLoadBalancing"
-    description: 'Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components. Addons specified by this flag will be enabled. The others will be disabled. '
+    description: "Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components. Addons specified by this flag will be enabled. The others will be disabled. "
   machine-type:
     type: string
     default: "n1-standard-1"
-    description: 'The type of machine to use for nodes. The list of predefined machine types is available using the following command.'
+    description: "The type of machine to use for nodes. The list of predefined machine types is available using the following command."
   zone:
     type: string
     default: ""
-    description: 'Compute zone (e.g. us-central1-a) for the cluster.'
+    description: "Compute zone (e.g. us-central1-a) for the cluster."
   scopes:
     type: string
     default: "gke-default"
-    description: 'Specifies scopes for the node instances.'
+    description: "Specifies scopes for the node instances."
   args:
     type: string
     default: ""
@@ -30,12 +30,14 @@ steps:
   - run:
       name: "Create GKE Cluster"
       command: |
-              gcloud config set run/platform gke
-              gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud components install kubectl
-              gcloud container clusters create <<parameters.cluster-name>> \
-              --addons=<<parameters.addons>> \
-              --machine-type=<<parameters.machine-type>> \
-              --zone=<<parameters.zone>> \
-              --scopes <<parameters.scopes>> \
-              << parameters.args >>
+        gcloud config set run/platform gke
+        gcloud config set project $GOOGLE_PROJECT_ID
+        gcloud components install kubectl
+        gcloud container clusters create <<parameters.cluster-name>> \
+        --addons=<<parameters.addons>> \
+        --machine-type=<<parameters.machine-type>> \
+        --zone=<<parameters.zone>> \
+        --scopes <<parameters.scopes>> \
+        << parameters.args >>
+        gcloud container hub cloudrun enable --project=$GOOGLE_PROJECT_ID
+        gcloud container hub cloudrun apply --gke-cluster=<<parameters.zone>>/<<parameters.cluster-name>>
