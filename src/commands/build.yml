@@ -25,6 +25,6 @@ steps:
         ORB_EVAL_SOURCE: << parameters.source >>
         ORB_EVAL_TAG: << parameters.tag >>
         ORB_EVAL_CONFIG: << parameters.config>>
-        ORB_EVAL_ARGS: << additional_args >>
+        ORB_EVAL_ARGS: << parameters.additional_args >>
       command: << include(scripts/build.sh) >>
               
