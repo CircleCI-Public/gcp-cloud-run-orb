@@ -2,14 +2,14 @@
 description: >
   Delete an existing GCloud cluster.
 parameters:
-  cluster-name:
+  cluster_name:
     type: string
     description: "The name of the cluster"
   zone:
     type: string
     default: ""
     description: 'Compute zone (e.g. us-central1-a) for the cluster.'
-  args:
+  additional_args:
     type: string
     default: ""
     description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
