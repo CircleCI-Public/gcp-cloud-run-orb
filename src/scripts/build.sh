@@ -23,8 +23,6 @@ if [ -n "$GCP_CONFIG" ]; then
   args+=(--config "$GCP_CONFIG")
 fi
 
-args+=("$GCP_ARGS")
-
 set -x
 gcloud builds submit "$GCP_SOURCE" "${args[@]}"
 set +x

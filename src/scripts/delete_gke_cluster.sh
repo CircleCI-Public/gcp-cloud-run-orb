@@ -12,8 +12,6 @@ if [ -n "$GCP_ZONE" ]; then
   args+=(--zone "$GCP_ZONE")
 fi
 
-args+=("$GCP_ARGS")
-
 export CLOUDSDK_CORE_DISABLE_PROMPTS=1
 gcloud config set run/platform gke
 gcloud config set project "$GOOGLE_PROJECT_ID"

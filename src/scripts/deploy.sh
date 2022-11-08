@@ -74,8 +74,6 @@ case $ORB_VAL_PLATFORM in
     if [ -n "$GCP_CLUSTER_LOCATION" ]; then
         gke_args+=(--cluster-location "$GCP_CLUSTER_LOCATION")
     fi
-
-    gke_args+=("$GCP_ARGS")
     
     # End of parameter check
     # Deployment command
