@@ -15,6 +15,6 @@ gcloud config set run/platform gke
 gcloud config set project "$GOOGLE_PROJECT_ID"
 
 set -x
-gcloud beta container clusters delete "$GCP_CLUSTER_NAME" "${args[@]}" "$GCP_ARGS"
+gcloud container clusters delete "$GCP_CLUSTER_NAME" "${args[@]}" "$GCP_ARGS"
 set +x
 echo "Clusters deleted."

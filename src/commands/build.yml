@@ -17,7 +17,8 @@ parameters:
   additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/builds/submit"
+    description: >
+      Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/builds/submit
 steps:
   - run:
       name: "Cloud Run Build"

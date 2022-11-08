@@ -31,11 +31,11 @@ case $ORB_VAL_PLATFORM in
 
     # End of parameter check
     # Deployment command
-    gcloud beta run deploy "$ORB_VAL_SERVICE_NAME" "${managed_args[@]}" --platform managed --region "$ORB_VAL_REGION" "${GCP_ARGS}"
+    gcloud run deploy "$ORB_VAL_SERVICE_NAME" "${managed_args[@]}" --platform managed --region "$ORB_VAL_REGION" "${GCP_ARGS}"
     echo
     echo "Service deployed"
     echo
-    GET_GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe "$ORB_VAL_SERVICE_NAME" --platform managed --region "$ORB_VAL_REGION" --format="value(status.address.url)")
+    GET_GCP_DEPLOY_ENDPOINT=$(gcloud run services describe "$ORB_VAL_SERVICE_NAME" --platform managed --region "$ORB_VAL_REGION" --format="value(status.address.url)")
     echo "export GCP_DEPLOY_ENDPOINT=$GET_GCP_DEPLOY_ENDPOINT" >> "$BASH_ENV"
     # shellcheck source=/dev/null
     source "$BASH_ENV"
@@ -74,7 +74,7 @@ case $ORB_VAL_PLATFORM in
     echo
     gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
     echo
-    gcloud beta run deploy "$ORB_VAL_SERVICE_NAME" "${gke_args[@]}" --platform gke "${GCP_ARGS}"
+    gcloud run deploy "$ORB_VAL_SERVICE_NAME" "${gke_args[@]}" --platform gke "${GCP_ARGS}"
     echo
     echo "Service deployed"
     echo
