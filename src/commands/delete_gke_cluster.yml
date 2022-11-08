@@ -21,4 +21,4 @@ steps:
         ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
         ORB_VAL_ZONE: << parameters.zone >>
         ORB_EVAL_ADDITIONAL_ARGS: << parameters.additional_args >>
-      command: << include(scripts/delete_gke_cluster) >>
+      command: << include(scripts/delete_gke_cluster.sh) >>
