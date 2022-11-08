@@ -8,7 +8,7 @@ parameters:
     description: The name of the cluster
   addons:
     type: string
-    default: "HorizontalPodAutoscaling,HttpLoadBalancing,Istio,CloudRun"
+    default: "HorizontalPodAutoscaling,HttpLoadBalancing,CloudRun"
     description: >
       Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components.
       Addons specified by this flag will be enabled. The others will be disabled.
@@ -33,16 +33,16 @@ parameters:
     default: ""
     description: >
       Add any additional arguments not explicitly defined as a parameter.
-      Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes
+      Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/container/clusters/create#--enable-stackdriver-kubernetes
 steps:
   - run:
       name: "Create GKE Cluster"
-      environment: 
-        ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
+      environment:
         ORB_VAL_ADDONS: << parameters.addons >>
-        ORB_VAL_MACHINE_TYPE: << parameters.machine_type >>
-        ORB_VAL_ZONE: << parameters.zone >>
         ORB_VAL_SCOPES: << parameters.scopes >>
         ORB_VAL_ENABLE_STACKDRIVER: << parameters.enable_stackdriver_kubernetes >>
+        ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
+        ORB_EVAL_MACHINE_TYPE: << parameters.machine_type >>
+        ORB_EVAL_ZONE: << parameters.zone >>
         ORB_EVAL_ADDITIONAL_ARGS: << parameters.additional_args >>
       command: << include(scripts/create_gke_cluster.sh) >>

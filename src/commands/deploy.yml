@@ -30,7 +30,8 @@ parameters:
   additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
+    description: >
+      Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/run/deploy
   unauthenticated:
     type: boolean
     default: false
@@ -40,11 +41,11 @@ steps:
       name: Cloud Run deploy
       environment:
         ORB_VAL_PLATFORM: <<parameters.platform>>
-        ORB_VAL_IMAGE: <<parameters.image>>
-        ORB_VAL_SERVICE_NAME: <<parameters.service_name>>
-        ORB_VAL_REGION: <<parameters.region>>
-        ORB_VAL_CLUSTER: <<parameters.cluster>>
-        ORB_VAL_CLUSTER_LOCATION: <<parameters.cluster_location>>
+        ORB_EVAL_IMAGE: <<parameters.image>>
+        ORB_EVAL_SERVICE_NAME: <<parameters.service_name>>
+        ORB_EVAL_REGION: <<parameters.region>>
+        ORB_EVAL_CLUSTER: <<parameters.cluster>>
+        ORB_EVAL_CLUSTER_LOCATION: <<parameters.cluster_location>>
         ORB_EVAL_ADDITIONAL_ARGS: <<parameters.additional_args>>
         ORB_VAL_UNAUTHENTICATED: <<parameters.unauthenticated>>
       command: << include(scripts/deploy.sh) >>

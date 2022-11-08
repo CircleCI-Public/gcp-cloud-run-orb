@@ -12,13 +12,13 @@ parameters:
   additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/container/clusters/create#--enable-stackdriver-kubernetes"
 steps:
   - run:
       name: "Delete GKE Cluster"
       no_output_timeout: 20m
-      environment: 
+      environment:
         ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
-        ORB_VAL_ZONE: << parameters.zone >>
+        ORB_EVAL_ZONE: << parameters.zone >>
         ORB_EVAL_ADDITIONAL_ARGS: << parameters.additional_args >>
-      command: << include(scripts/delete_gke_cluster) >>
+      command: << include(scripts/delete_gke_cluster.sh) >>
