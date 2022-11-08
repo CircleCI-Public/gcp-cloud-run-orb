@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   cloudrun: circleci/gcp-cloud-run@dev:<<pipeline.git.revision>>
   gcp-cli: circleci/gcp-cli@2.4.1
-  orb-tools: circleci/orb-tools@11.1
+  orb-tools: circleci/orb-tools@11.4
 
 filters: &filters
   tags:
