@@ -37,7 +37,7 @@ parameters:
 steps:
   - run:
       name: "Create GKE Cluster"
-      environment: 
+      environment:
         ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
         ORB_VAL_ADDONS: << parameters.addons >>
         ORB_VAL_MACHINE_TYPE: << parameters.machine_type >>
