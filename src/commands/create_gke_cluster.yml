@@ -38,11 +38,11 @@ steps:
   - run:
       name: "Create GKE Cluster"
       environment:
-        ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
         ORB_VAL_ADDONS: << parameters.addons >>
-        ORB_VAL_MACHINE_TYPE: << parameters.machine_type >>
-        ORB_VAL_ZONE: << parameters.zone >>
         ORB_VAL_SCOPES: << parameters.scopes >>
         ORB_VAL_ENABLE_STACKDRIVER: << parameters.enable_stackdriver_kubernetes >>
+        ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
+        ORB_EVAL_MACHINE_TYPE: << parameters.machine_type >>
+        ORB_EVAL_ZONE: << parameters.zone >>
         ORB_EVAL_ADDITIONAL_ARGS: << parameters.additional_args >>
       command: << include(scripts/create_gke_cluster.sh) >>
