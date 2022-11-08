@@ -37,7 +37,11 @@ case $ORB_VAL_PLATFORM in
 
     # End of parameter check
     # Deployment command
+
+    set -x
     gcloud run deploy "$GCP_SERVICE_NAME" --platform managed --region "$GCP_REGION" "${managed_args[@]}"
+    set +x
+
     echo
     echo "Service deployed"
     echo
@@ -81,7 +85,11 @@ case $ORB_VAL_PLATFORM in
     echo
     gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
     echo
-    gcloud run deploy "$GCP_SERVICE_NAME"  --platform gke "${gke_args[@]}"
+
+    set -x
+    gcloud run deploy "$GCP_SERVICE_NAME" --platform gke "${gke_args[@]}"
+    set +x
+
     echo
     echo "Service deployed"
     echo
