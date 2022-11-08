@@ -12,8 +12,8 @@ if [ ! -f Dockerfile ] && [ -z "$GCP_SOURCE" ]; then
     exit 1
 fi
 
-
-args=()
+# Populate args array with additional args
+IFS=" " read -a args -r <<< "${GCP_ARGS[@]}"
 
 if [ -n "$GCP_TAG" ]; then
   args+=(--tag "$GCP_TAG")
@@ -26,5 +26,5 @@ fi
 args+=("$GCP_ARGS")
 
 set -x
-gcloud builds submit "${args[@]}"
+gcloud builds submit --source "$GCP_SOURCE" "${args[@]}"
 set +x

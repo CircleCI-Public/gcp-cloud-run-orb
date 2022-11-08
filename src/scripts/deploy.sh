@@ -22,7 +22,8 @@ case $ORB_VAL_PLATFORM in
         exit 1
     fi
 
-    managed_args=()
+    # Initialize managed_args array with additional args
+    IFS=" " read -a managed_args -r <<< "${GCP_ARGS[@]}"
 
     if [ -n "$GCP_IMAGE" ]; then
         managed_args+=(--image "$GCP_IMAGE")
@@ -33,8 +34,6 @@ case $ORB_VAL_PLATFORM in
     else
         managed_args+=(--no-allow-unauthenticated)
     fi
-
-    managed_args+=("$GCP_ARGS")
 
     # End of parameter check
     # Deployment command
@@ -61,7 +60,8 @@ case $ORB_VAL_PLATFORM in
         exit 1
     fi
 
-    gke_args=()
+    # Initialize gke_args array with additional args
+    IFS=" " read -a gke_args -r <<< "${GCP_ARGS[@]}"
 
     if [ -n "$GCP_IMAGE" ]; then
         gke_args+=(--image "$GCP_IMAGE")

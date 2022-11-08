@@ -5,7 +5,8 @@ GCP_CLUSTER_NAME=$(eval "echo $ORB_EVAL_CLUSTER_NAME")
 GCP_ZONE=$(eval "echo $ORB_EVAL_ZONE")
 GCP_ARGS=$(eval "echo $ORB_EVAL_ADDITIONAL_ARGS")
 
-args=()
+# Initialize args array with additional args
+IFS=" " read -a args -r <<< "${GCP_ARGS[@]}"
 
 if [ -n "$GCP_ZONE" ]; then
   args+=(--zone "$GCP_ZONE")
