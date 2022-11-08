@@ -26,5 +26,5 @@ fi
 args+=("$GCP_ARGS")
 
 set -x
-gcloud builds submit --source "$GCP_SOURCE" "${args[@]}"
+gcloud builds submit "$GCP_SOURCE" "${args[@]}"
 set +x
