@@ -1,0 +1,102 @@
+version: 2.1
+orbs:
+  cloudrun: circleci/gcp-cloud-run@dev:<<pipeline.git.revision>>
+  orb-tools: circleci/orb-tools@11.1
+  
+filters: &filters
+  tags:
+    only: /.*/
+
+jobs:
+  build_and_deploy_gke:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - cloudrun/init
+      - cloudrun/create_gke_cluster:
+          cluster-name: "example-cluster-${CIRCLE_BUILD_NUM}"
+          machine-type: "n1-standard-4"
+          zone: "us-east1"
+          enable-stackdriver-kubernetes: true
+          scopes: "cloud-platform"
+      - cloudrun/build:
+          tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          source: ./sample
+      - cloudrun/deploy:
+          platform: "gke"
+          cluster: "example-cluster-${CIRCLE_BUILD_NUM}"
+          image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          cluster-location: "us-east1"
+          service-name: "example-service-${CIRCLE_BUILD_NUM}"
+      - cloudrun/delete_gke_cluster:
+          zone: "us-east1"
+          cluster-name: "example-cluster-${CIRCLE_BUILD_NUM}"
+  build_and_deploy:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - cloudrun/init
+      - run:
+          name: Check contents of current directory
+          command: |
+            pwd
+            ls -lah
+      - cloudrun/build:
+          tag: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          source: ./sample
+      - cloudrun/deploy:
+          platform: managed
+          image: "gcr.io/${GOOGLE_PROJECT_ID}/test-${CIRCLE_SHA1}"
+          service-name: "example-service"
+          region: "us-east1"
+          unauthenticated: true
+      - run:
+          name: Test managed deployed service.
+          command: |-
+            GCP_API_RESULTS=$(curl -s "$GCP_DEPLOY_ENDPOINT")
+            if [ "$GCP_API_RESULTS" != "Hello World!" ]; then
+              echo "Result is unexpected"
+              echo 'Result: '
+              curl -s "$GCP_DEPLOY_ENDPOINT"
+              exit 1;
+            fi
+workflows:
+  test-deploy:
+    jobs:
+      - build_and_deploy:
+          name: build_and_deploy-dev
+          context: orb-publishing
+          filters: *filters
+
+      - build_and_deploy:
+          name: build_and_deploy-prod
+          context: orb-publishing
+          filters: *filters
+
+      - build_and_deploy_gke:
+          name: build_and_deploy_gke-dev
+          context: orb-publishing
+          filters: *filters
+
+      - build_and_deploy_gke:
+          name: build_and_deploy_gke-prod
+          context: orb-publishing
+          filters: *filters
+          
+      - orb-tools/pack:
+          filters: *filters
+      - orb-tools/publish:
+          orb-name: circleci/gcp-cloud-run
+          vcs-type: << pipeline.project.type >>
+          pub-type: production
+          requires:
+            - orb-tools/pack
+            - command-tests
+          context: orb-publisher
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/

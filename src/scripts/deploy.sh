@@ -37,6 +37,7 @@ case $ORB_VAL_PLATFORM in
     echo
     GET_GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe "$ORB_VAL_SERVICE_NAME" --platform managed --region "$ORB_VAL_REGION" --format="value(status.address.url)")
     echo "export GCP_DEPLOY_ENDPOINT=$GET_GCP_DEPLOY_ENDPOINT" >> "$BASH_ENV"
+    # shellcheck source=/dev/null
     source "$BASH_ENV"
     echo "$GCP_DEPLOY_ENDPOINT"
     ;;
