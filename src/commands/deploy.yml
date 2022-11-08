@@ -12,7 +12,7 @@ parameters:
     type: string
     default: ""
     description: 'Name of the container image to deploy (e.g. gcr.io/cloudrun/hello:latest).'
-  service-name:
+  service_name:
     type: string
     description: "What is the name of the service being deployed?"
   region:
@@ -23,14 +23,15 @@ parameters:
     type: string
     default: ""
     description: 'ID of the cluster or fully qualified identifier for the cluster. Required on "gke" and "kubernetes" platforms.'
-  cluster-location:
+  cluster_location:
     type: string
     default: ""
     description: 'Zone in which the cluster is located. Required on "gke" and "kubernetes" platforms.'
-  args:
+  additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/run/deploy"
+    description: >
+      Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/run/deploy
   unauthenticated:
     type: boolean
     default: false
@@ -38,64 +39,13 @@ parameters:
 steps:
   - run:
       name: Cloud Run deploy
-      command: |
-        PLATFORM=<<parameters.platform>>
-        case $PLATFORM in
-          managed)
-            echo 'Platform: Managed'
-            # Check for required parameters
-            GCP_REGION=<<parameters.region>>
-            GCP_SERVICE_NAME=<<parameters.service-name>>
-            if [ -z $GCP_REGION ]; then
-              echo 'The region parameter is required for the "managed" platform.'
-              exit 1
-            fi
-            if [ -z $GCP_SERVICE_NAME ]; then
-              echo 'The service-name parameter is required for the "managed" platform.'
-              exit 1
-            fi
-            # End of parameter check
-            # Deployment command
-            gcloud beta run deploy <<parameters.service-name>> \
-            --image <<parameters.image>> \
-            --region <<parameters.region>> \
-            <<# parameters.unauthenticated>>--allow-unauthenticated<</parameters.unauthenticated>> \
-            <<^ parameters.unauthenticated>>--no-allow-unauthenticated<</parameters.unauthenticated>> \
-            --platform managed << parameters.args >>
-            echo
-            echo "Service deployed"
-            echo
-            GET_GCP_DEPLOY_ENDPOINT=$(gcloud beta run services describe <<parameters.service-name>> --platform <<parameters.platform>><<# parameters.region>> --region <<parameters.region>><</ parameters.region>> --format="value(status.address.url)")
-            echo "export GCP_DEPLOY_ENDPOINT=$GET_GCP_DEPLOY_ENDPOINT" >> $BASH_ENV
-            source $BASH_ENV
-            echo $GCP_DEPLOY_ENDPOINT
-            ;;
-          gke)
-            echo 'Platform: GKE'
-            # Check for required parameters
-            GCP_CLUSTER=<<parameters.cluster>>
-            GCP_CLUSTER_LOCATION=<<parameters.cluster-location>>
-            if [ -z $GCP_CLUSTER ]; then
-              echo 'The cluster parameter is required for the "gke" platform.'
-              exit 1
-            fi
-            if [ -z $GCP_CLUSTER_LOCATION ]; then
-              echo 'The cluster-location parameter is required for the "gke" platform.'
-              exit 1
-            fi
-            # End of parameter check
-            # Deployment command
-            echo "Ensure all required APIs are enabled"
-            echo
-            gcloud services enable container.googleapis.com containerregistry.googleapis.com cloudbuild.googleapis.com
-            echo
-            gcloud beta run deploy <<parameters.service-name>>\
-            --cluster <<parameters.cluster>> \
-            --cluster-location <<parameters.cluster-location>> \
-            --image <<parameters.image>> \
-            --platform gke << parameters.args >>
-            echo
-            echo "Service deployed"
-            echo
-            ;;
-        esac
+      environment:
+        ORB_VAL_PLATFORM: <<parameters.platform>>
+        ORB_EVAL_IMAGE: <<parameters.image>>
+        ORB_EVAL_SERVICE_NAME: <<parameters.service_name>>
+        ORB_EVAL_REGION: <<parameters.region>>
+        ORB_EVAL_CLUSTER: <<parameters.cluster>>
+        ORB_EVAL_CLUSTER_LOCATION: <<parameters.cluster_location>>
+        ORB_EVAL_ADDITIONAL_ARGS: <<parameters.additional_args>>
+        ORB_VAL_UNAUTHENTICATED: <<parameters.unauthenticated>>
+      command: << include(scripts/deploy.sh) >>

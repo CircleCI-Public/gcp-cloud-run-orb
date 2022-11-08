@@ -14,23 +14,17 @@ parameters:
     type: string
     default: ""
     description: 'The YAML or JSON file to use as the build configuration file.'
-  args:
+  additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/builds/submit"
+    description: >
+      Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/builds/submit
 steps:
   - run:
       name: "Cloud Run Build"
-      command: |
-              # if no source parameter is set, check for a Dockerfile and fail if none is found.
-              <<^ parameters.source >>
-              if [ ! -f Dockerfile ]; then
-                echo "No Dockerfile in $(pwd). You may need to specify a source location."
-                exit 1
-              fi
-              <</ parameters.source >>
-              gcloud builds submit \
-              <<# parameters.source>><< parameters.source >><</ parameters.source>> \
-              <<# parameters.tag>>--tag << parameters.tag >><</ parameters.tag>> \
-              <<# parameters.config>>--config << parameters.config >><</ parameters.config>> \
-              << parameters.args >>
+      environment:
+        ORB_EVAL_SOURCE: << parameters.source >>
+        ORB_EVAL_TAG: << parameters.tag >>
+        ORB_EVAL_CONFIG: << parameters.config>>
+        ORB_EVAL_ARGS: << parameters.additional_args >>
+      command: << include(scripts/build.sh) >>

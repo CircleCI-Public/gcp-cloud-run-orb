@@ -1,44 +1,48 @@
 # How to author commands: https://circleci.com/docs/2.0/reusing-config/#authoring-reusable-commands
 description: >
-  'Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
-  Learn more: https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy-gke'
+  Create a cluster and enable it for Cloud Run for Anthos on Google Cloud
+  Learn more: https://cloud.google.com/run/docs/quickstarts/prebuilt-deploy-gke
 parameters:
-  cluster-name:
+  cluster_name:
     type: string
-    description: "The name of the cluster"
+    description: The name of the cluster
   addons:
     type: string
-    default: "HorizontalPodAutoscaling,HttpLoadBalancing,Istio,CloudRun"
-    description: 'Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components. Addons specified by this flag will be enabled. The others will be disabled. '
-  machine-type:
+    default: "HorizontalPodAutoscaling,HttpLoadBalancing,CloudRun"
+    description: >
+      Addons (https://cloud.google.com/kubernetes-engine/reference/rest/v1/projects.zones.clusters#AddonsConfig) are additional Kubernetes cluster components.
+      Addons specified by this flag will be enabled. The others will be disabled.
+  machine_type:
     type: string
     default: "n1-standard-1"
-    description: 'The type of machine to use for nodes. The list of predefined machine types is available using the following command.'
+    description: The type of machine to use for nodes. The list of predefined machine types is available using the following command.
   zone:
     type: string
     default: ""
-    description: 'Compute zone (e.g. us-central1-a) for the cluster.'
+    description: Compute zone (e.g. us-central1-a) for the cluster.
   scopes:
     type: string
     default: "gke-default"
-    description: 'Specifies scopes for the node instances.'
-  enable-stackdriver-kubernetes:
+    description: Specifies scopes for the node instances.
+  enable_stackdriver_kubernetes:
     type: boolean
     default: false
-    description: 'Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)'
-  args:
+    description: Enable Stackdrive logging for Kubernetes (https://cloud.google.com/monitoring/kubernetes-engine/legacy-stackdriver/logging)
+  additional_args:
     type: string
     default: ""
-    description: "Add any additional arguments not explicitly defined as a parameter. Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/beta/container/clusters/create#--enable-stackdriver-kubernetes"
+    description: >
+      Add any additional arguments not explicitly defined as a parameter.
+      Find additional arguments here: https://cloud.google.com/sdk/gcloud/reference/container/clusters/create#--enable-stackdriver-kubernetes
 steps:
   - run:
       name: "Create GKE Cluster"
-      command: |
-              gcloud config set run/platform gke
-              gcloud config set project $GOOGLE_PROJECT_ID
-              gcloud beta container clusters create <<parameters.cluster-name>> \
-              --addons=<<parameters.addons>> \
-              --machine-type=<<parameters.machine-type>> \
-              --zone=<<parameters.zone>> \
-              --scopes <<parameters.scopes>> \
-              <<# parameters.enable-stackdriver-kubernetes >>--enable-stackdriver-kubernetes<</ parameters.enable-stackdriver-kubernetes >> << parameters.args >>
+      environment:
+        ORB_VAL_ADDONS: << parameters.addons >>
+        ORB_VAL_SCOPES: << parameters.scopes >>
+        ORB_VAL_ENABLE_STACKDRIVER: << parameters.enable_stackdriver_kubernetes >>
+        ORB_EVAL_CLUSTER_NAME: << parameters.cluster_name >>
+        ORB_EVAL_MACHINE_TYPE: << parameters.machine_type >>
+        ORB_EVAL_ZONE: << parameters.zone >>
+        ORB_EVAL_ADDITIONAL_ARGS: << parameters.additional_args >>
+      command: << include(scripts/create_gke_cluster.sh) >>
